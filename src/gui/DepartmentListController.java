@@ -45,7 +45,8 @@ public class DepartmentListController implements Initializable {
 	@FXML
 	public void onBtNewAction(ActionEvent event) {
 		Stage parentStage = Utils.currentStage(event);
-		createDialogForm("/gui/DepartmentForm.fxml", parentStage);
+		Department obj = new Department();
+		createDialogForm(obj,"/gui/DepartmentForm.fxml", parentStage);
 	}	
 	
 	private ObservableList<Department> obsList;
@@ -86,11 +87,16 @@ public class DepartmentListController implements Initializable {
 		//instanciando a obsList no view;		
 	}
 	
-	private void createDialogForm(String absoluteName, Stage parentStage) {
+	private void createDialogForm(Department obj, String absoluteName, Stage parentStage) {
 	//informando o stage que criou a janela de dialogo;
 		try {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource(absoluteName));
 			Pane pane = loader.load();
+			
+			DepartmentFormController controller = loader.getController();
+			controller.setDepartment(obj);
+			controller.updateFormData();			
+			
 			//quando a janela é modal, precisa instanciar um novo stage; Um palco na frente do outro:
 			Stage dialogStage = new Stage();
 			dialogStage.setTitle("Enter Department data");
