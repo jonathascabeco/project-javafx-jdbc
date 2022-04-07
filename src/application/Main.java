@@ -6,6 +6,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.ScrollPane;
 import javafx.stage.Stage;
 
 public class Main extends Application {
@@ -13,11 +14,16 @@ public class Main extends Application {
 	public void start(Stage primaryStage) {
 		try {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/MainView.fxml"));
-			Parent parent = loader.load();
+			ScrollPane scrollPane = loader.load();
 			//instanciando o carregamento da MainView;
-			//Lembrando, Parent é uma classe genéria de AnchorPaine, por isso é chamada aqui;
+			//Parent tracada por ScrollPane para o mesmo ja ser instanciado a principio;
+			//Objetivando a configuração mais facilidata do layout principal;
 			
-			Scene mainScene = new Scene(parent);//obj Scene, cena principal;
+			scrollPane.setFitToHeight(true);
+			scrollPane.setFitToWidth(true);
+			//ajustando o vBox para preencher toda a tela do principal do View;
+			
+			Scene mainScene = new Scene(scrollPane);//obj Scene, cena principal;
 			primaryStage.setScene(mainScene);
 			primaryStage.setTitle("Sample JavaFX application");
 			primaryStage.show();
