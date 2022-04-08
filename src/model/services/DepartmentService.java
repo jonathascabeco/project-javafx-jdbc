@@ -15,5 +15,15 @@ public class DepartmentService {
 	public List<Department> findAll(){
 			return dao.findAll();
 		}		
-		//após isso, declarar uma dependencia desse servico no controller do DepartmentListController, para carregar essa lista na view; 
+		//após isso, declarar uma dependencia desse servico no controller do DepartmentListController, para carregar essa lista na view;
+	
+	public void saveOrUpdate(Department obj) {
+		//ou inserir ou atualizar;
+		if(obj.getId() == null) {
+			dao.insert(obj);
+		}
+		else {
+			dao.update(obj);
+		}
+	}
 }
