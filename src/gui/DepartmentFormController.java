@@ -1,9 +1,12 @@
 package gui;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import db.DbException;
+import gui.listeners.DataChangeListener;
 import gui.util.Alerts;
 import gui.util.Constraints;
 import gui.util.Utils;
@@ -22,6 +25,8 @@ public class DepartmentFormController implements Initializable {
 	private Department entity;
 	
 	private DepartmentService service;
+	
+	private List<DataChangeListener> dataChangeListeners =new ArrayList<>(); 
 	
 	@FXML
 	private TextField txtId;
@@ -42,6 +47,11 @@ public class DepartmentFormController implements Initializable {
 		this.entity = entity;
 	}
 	
+	public void subscribeDataChangeListener(DataChangeListener listener) {
+		dataChangeListeners.add(listener);
+		// objetos que implementam a interface do parametro, podem se inscrever para receber o evento da classe me questão;
+	}
+	
 	public void setDepartmentService(DepartmentService service) {
 		this.service = service;
 	}
@@ -59,6 +69,7 @@ public class DepartmentFormController implements Initializable {
 		try {
 			entity = getFormData();
 			service.saveOrUpdate(entity);
+			notifayDataChangeListeners();
 			Utils.currentStage(event).close();
 		}
 		catch(DbException e){
@@ -66,6 +77,14 @@ public class DepartmentFormController implements Initializable {
 		}
 	}
 	
+	private void notifayDataChangeListeners() {
+		for(DataChangeListener listener : dataChangeListeners) {
+			listener.onDataChanged();
+			//implementando a atualização em cada item da lista;
+		}
+		
+	}
+
 	private Department getFormData() {
 		Department obj = new Department();
 		
