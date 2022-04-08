@@ -28,6 +28,15 @@ public class Utils {
 			return null;
 		}
 	}
+	
+	public static Double tryParseToDouble(String str) {
+		// ou converte para número ou retorna null;
+		try {
+			return Double.parseDouble(str);
+		} catch (NumberFormatException e) {
+			return null;
+		}
+	}
 
 	// DOIS PRÓXIMOS MÉTODOS PARA TRATAMENTO DA COLUNA CONCERNENTE A DATA;
 	public static <T> void formatTableColumnDate(TableColumn<T, Date> tableColumn, String format) {
