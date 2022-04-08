@@ -46,6 +46,7 @@ public class DepartmentListController implements Initializable {
 	public void onBtNewAction(ActionEvent event) {
 		Stage parentStage = Utils.currentStage(event);
 		Department obj = new Department();
+		//precisa-se instanciar o objeto vazio para depois receber os dados do formulário;
 		createDialogForm(obj,"/gui/DepartmentForm.fxml", parentStage);
 	}	
 	
@@ -95,7 +96,9 @@ public class DepartmentListController implements Initializable {
 			
 			DepartmentFormController controller = loader.getController();
 			controller.setDepartment(obj);
-			controller.updateFormData();			
+			controller.setDepartmentService(new DepartmentService());// injetando a dependencia do serviço;
+			controller.updateFormData();	
+			
 			
 			//quando a janela é modal, precisa instanciar um novo stage; Um palco na frente do outro:
 			Stage dialogStage = new Stage();
