@@ -46,17 +46,18 @@ public class SellerListController implements Initializable, DataChangeListener {
 
 	@FXML
 	private TableColumn<Seller, String> tableColumnName;
-	
+
 	@FXML
 	private TableColumn<Seller, String> tableColumnEmail;
+
 	@FXML
 	private TableColumn<Seller, Date> tableColumnBirthDate;
+
 	@FXML
 	private TableColumn<Seller, Double> tableColumnBaseSalary;
 
 	@FXML
 	private TableColumn<Seller, Seller> tableColumnEDIT;
-	// coluna de edição, será inserido um botão na mesma;
 
 	@FXML
 	private TableColumn<Seller, Seller> tableColumnREMOVE;
@@ -68,14 +69,11 @@ public class SellerListController implements Initializable, DataChangeListener {
 	public void onBtNewAction(ActionEvent event) {
 		Stage parentStage = Utils.currentStage(event);
 		Seller obj = new Seller();
-		// precisa-se instanciar o objeto vazio para depois receber os dados do
-		// formulário;
 		createDialogForm(obj, "/gui/SellerForm.fxml", parentStage);
 	}
 
 	private ObservableList<Seller> obsList;
 
-	// injetando dependencia, inversão de controle;
 	public void setSellerService(SellerService service) {
 		this.service = service;
 	}
@@ -93,51 +91,34 @@ public class SellerListController implements Initializable, DataChangeListener {
 		Utils.formatTableColumnDate(tableColumnBirthDate, "dd/MM/yyyy");
 		tableColumnBaseSalary.setCellValueFactory(new PropertyValueFactory<>("baseSalary"));
 		Utils.formatTableColumnDouble(tableColumnBaseSalary, 2);
-		// rotina padrão javafx para iniciar o comportamento das colunas;
-
 		Stage stage = (Stage) Main.getMainScene().getWindow();
-		// pegando referencia da janela, window é uma superclasse do stage, por isso o
-		// downCasting;
-
 		tableViewSeller.prefHeightProperty().bind(stage.heightProperty());
-		// tableview aconpanhar a altura da janela;
 	}
 
 	public void updateTableView() {
-		// proteção caso não injete a dependência;
 		if (service == null) {
 			throw new IllegalStateException("Service was null!");
 		}
 
 		List<Seller> list = service.findAll();
-		// dados da lista mock do Seller;
 		obsList = FXCollections.observableArrayList(list);
-		// instanciando a list na obsList;
 		tableViewSeller.setItems(obsList);
-		// instanciando a obsList no view;
 		initEditButtons();
-		// instanciar botao edit em cada campo de itens department;
 		initRemoveButtons();
-		// instanciando botão delete em cada entidade do department;
 	}
 
-		
 	private void createDialogForm(Seller obj, String absoluteName, Stage parentStage) {
-		// informando o stage que criou a janela de dialogo;
 		try {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource(absoluteName));
 			Pane pane = loader.load();
 
 			SellerFormController controller = loader.getController();
 			controller.setSeller(obj);
-			controller.setServices(new SellerService(), new DepartmentService());// injetando a dependencia do serviço;
+			controller.setServices(new SellerService(), new DepartmentService());
 			controller.loadAssociatedObjects();
-			controller.subscribeDataChangeListener(this);// ouvindo o evento - quando acionado ele executará o
-															// onDataChanged();
+			controller.subscribeDataChangeListener(this);
 			controller.updateFormData();
 
-			// quando a janela é modal, precisa instanciar um novo stage; Um palco na frente
-			// do outro:
 			Stage dialogStage = new Stage();
 			dialogStage.setTitle("Enter Seller data");
 			dialogStage.setScene(new Scene(pane));
@@ -145,7 +126,6 @@ public class SellerListController implements Initializable, DataChangeListener {
 			dialogStage.initOwner(parentStage);
 			dialogStage.initModality(Modality.WINDOW_MODAL);
 			dialogStage.showAndWait();
-
 		} catch (IOException e) {
 			e.printStackTrace();
 			Alerts.showAlert("IOException", "Error loading view", e.getMessage(), AlertType.ERROR);
@@ -155,10 +135,8 @@ public class SellerListController implements Initializable, DataChangeListener {
 	@Override
 	public void onDataChanged() {
 		updateTableView();
-
 	}
 
-	// botão em cada campo de itens do department com possibilidade de edição;
 	private void initEditButtons() {
 		tableColumnEDIT.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(param.getValue()));
 		tableColumnEDIT.setCellFactory(param -> new TableCell<Seller, Seller>() {
@@ -167,23 +145,16 @@ public class SellerListController implements Initializable, DataChangeListener {
 			@Override
 			protected void updateItem(Seller obj, boolean empty) {
 				super.updateItem(obj, empty);
-				// department da linha do botão clicado;
-				// pegando obj preenchido criando a tela de cadastro com o mesmo preenchido;
-
 				if (obj == null) {
 					setGraphic(null);
 					return;
 				}
-				// configuração do evento do botão;
 				setGraphic(button);
-				button.setOnAction(
-						event -> createDialogForm(obj, "/gui/SellerForm.fxml", Utils.currentStage(event)));
-				// quando clicar vai abrir esse formulário descrito;
+				button.setOnAction(event -> createDialogForm(obj, "/gui/SellerForm.fxml", Utils.currentStage(event)));
 			}
 		});
 	}
 
-	// parecido com o método acima, mas com função de deleção;
 	private void initRemoveButtons() {
 		tableColumnREMOVE.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(param.getValue()));
 		tableColumnREMOVE.setCellFactory(param -> new TableCell<Seller, Seller>() {
@@ -192,7 +163,6 @@ public class SellerListController implements Initializable, DataChangeListener {
 			@Override
 			protected void updateItem(Seller obj, boolean empty) {
 				super.updateItem(obj, empty);
-
 				if (obj == null) {
 					setGraphic(null);
 					return;
@@ -205,10 +175,8 @@ public class SellerListController implements Initializable, DataChangeListener {
 		});
 	}
 
-	// Operação para remover uma entidade de department;
 	private void removeEntity(Seller obj) {
 		Optional<ButtonType> result = Alerts.showConfirmation("Confirmation", "Are you sure to delete?");
-
 		if (result.get() == ButtonType.OK) {
 			if (service == null) {
 				throw new IllegalStateException("Service was null");

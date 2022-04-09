@@ -92,8 +92,6 @@ public class SellerFormController implements Initializable {
 
 	public void subscribeDataChangeListener(DataChangeListener listener) {
 		dataChangeListeners.add(listener);
-		// objetos que implementam a interface do parametro, podem se inscrever para
-		// receber o evento da classe me questão;
 	}
 
 	public void setServices(SellerService service, DepartmentService departmentService) {
@@ -103,8 +101,6 @@ public class SellerFormController implements Initializable {
 
 	@FXML
 	private void onBtSaveAction(ActionEvent event) {
-		// tratando exceção, pois a injeção de independencia é manual;
-		// se houvesse um framework(conteiners) para tratar nao seria necessário;
 		if (entity == null) {
 			throw new IllegalStateException("Entity was null");
 		}
@@ -126,20 +122,14 @@ public class SellerFormController implements Initializable {
 	private void notifayDataChangeListeners() {
 		for (DataChangeListener listener : dataChangeListeners) {
 			listener.onDataChanged();
-			// implementando a atualização em cada item da lista;
 		}
 
 	}
 
 	private Seller getFormData() {
 		Seller obj = new Seller();
-
 		ValidationException exception = new ValidationException("Validation error!");
-
 		obj.setId(Utils.tryParseToInt(txtId.getText()));
-		// pegando o texto na caixa do form e utilizando a função para transformá-lo em
-		// número inteiro;
-
 		if (txtName.getText() == null || txtName.getText().trim().equals("")) {
 			exception.addError("name", "Field can't be empty!");
 		}
@@ -155,22 +145,16 @@ public class SellerFormController implements Initializable {
 		} else {
 			Instant instant = Instant.from(dpBirthDate.getValue().atStartOfDay(ZoneId.systemDefault()));
 			obj.setBirthDate(Date.from(instant));
-			// converte data usurio para data sem vinculo de localidade; assim que pega data
-			// no datepicket, tem de ser
-			// por instant;
 		}
 		if (txtBaseSalary.getText() == null || txtBaseSalary.getText().trim().equals("")) {
 			exception.addError("baseSalary", "Field can't be empty!");
 		}
 		obj.setBaseSalary(Utils.tryParseToDouble(txtBaseSalary.getText()));
-		
-		obj.setDepartment(comboBoxDepartment.getValue());	
-		
-		
+
+		obj.setDepartment(comboBoxDepartment.getValue());
 		if (exception.getErrors().size() > 0) {
 			throw exception;
 		}
-
 		return obj;
 	}
 
@@ -198,9 +182,8 @@ public class SellerFormController implements Initializable {
 		if (entity == null) {
 			throw new IllegalStateException("Entity was null");
 		}
-		// pegando os dados digitados na UI e enviando para o obj, e esta instanciando
-		// para o BD;
-		txtId.setText(String.valueOf(entity.getId()));// string.value porque pega o inteiro e transforma pra int;
+
+		txtId.setText(String.valueOf(entity.getId()));
 		txtName.setText(entity.getName());
 		txtEmail.setText(entity.getEmail());
 		Locale.setDefault(Locale.US);
@@ -209,14 +192,11 @@ public class SellerFormController implements Initializable {
 			dpBirthDate.setValue(LocalDate.ofInstant(entity.getBirthDate().toInstant(), ZoneId.systemDefault()));
 		}
 		if (entity.getDepartment() == null) {
-			comboBoxDepartment.getSelectionModel().selectFirst();// pega o primeiro item da lista do combobox
+			comboBoxDepartment.getSelectionModel().selectFirst();
 		}
 		comboBoxDepartment.setValue(entity.getDepartment());
 	}
 
-	// vai carregar os objs associados;
-	// responsavel por chamar o department service, carregar o bd e preencher a list
-	// para UI;
 	public void loadAssociatedObjects() {
 		if (departmentService == null) {
 			throw new IllegalStateException("Departmnent service was null");
@@ -228,17 +208,12 @@ public class SellerFormController implements Initializable {
 	}
 
 	private void setErrorMessages(Map<String, String> errors) {
-		// percorrer a coleção setando os campos labls correspondentes das mesmas na UI;
 		Set<String> fields = errors.keySet();
 
 		labelErrorName.setText((fields.contains("name")) ? errors.get("name") : "");
-		// pegando a mensagem de erro do campo name e setando na label correspondente na
-		// UI;
-
 		labelErrorEmail.setText((fields.contains("email")) ? errors.get("email") : "");
 		labelErrorBirthDate.setText((fields.contains("birthDate")) ? errors.get("birthDate") : "");
 		labelErrorBaseSalary.setText((fields.contains("baseSalary")) ? errors.get("baseSalary") : "");
-		
 	}
 
 	private void initializeComboBoxDepartment() {

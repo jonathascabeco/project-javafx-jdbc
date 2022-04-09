@@ -21,16 +21,14 @@ public class Utils {
 	}
 
 	public static Integer tryParseToInt(String str) {
-		// ou converte para número ou retorna null;
 		try {
 			return Integer.parseInt(str);
 		} catch (NumberFormatException e) {
 			return null;
 		}
 	}
-	
+
 	public static Double tryParseToDouble(String str) {
-		// ou converte para número ou retorna null;
 		try {
 			return Double.parseDouble(str);
 		} catch (NumberFormatException e) {
@@ -38,7 +36,6 @@ public class Utils {
 		}
 	}
 
-	// DOIS PRÓXIMOS MÉTODOS PARA TRATAMENTO DA COLUNA CONCERNENTE A DATA;
 	public static <T> void formatTableColumnDate(TableColumn<T, Date> tableColumn, String format) {
 		tableColumn.setCellFactory(column -> {
 			TableCell<T, Date> cell = new TableCell<T, Date>() {
@@ -76,10 +73,9 @@ public class Utils {
 			return cell;
 		});
 	}
-	//formato das datas como bem quiser(Stack Overflow);
+
 	public static void formatDatePicker(DatePicker datePicker, String format) {
 		datePicker.setConverter(new StringConverter<LocalDate>() {
-
 			DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(format);
 			{
 				datePicker.setPromptText(format.toLowerCase());
